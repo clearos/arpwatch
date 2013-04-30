@@ -1,0 +1,12 @@
+[Unit]
+Description=Arpwatch daemon which keeps track of ethernet/ip address pairings
+After=syslog.target network.target
+
+[Service]
+Type=forking
+EnvironmentFile=-/etc/sysconfig/arpwatch
+PrivateTmp=yes
+ExecStart=/usr/sbin/arpwatch $OPTIONS
+
+[Install]
+WantedBy=multi-user.target

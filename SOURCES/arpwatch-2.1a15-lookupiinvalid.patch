@@ -1,0 +1,12 @@
+diff -up ./arpwatch.c.iinval ./arpwatch.c
+--- ./arpwatch.c.iinval	2012-10-15 16:55:58.646218256 +0200
++++ ./arpwatch.c	2012-10-15 17:04:30.566199946 +0200
+@@ -171,7 +171,7 @@ try_dev(char *interface, pcap_t **pd, in
+ 	timeout = 1000;
+ 
+ 	*pd = pcap_open_live(interface, snaplen, 1, timeout, errbuf);
+-	if (NULL == pd) {
++	if (NULL == *pd) {
+ 		syslog(LOG_ERR, "pcap open %s: %s", interface,  errbuf);
+ 		return NULL;
+ 	}
