@@ -4,7 +4,7 @@
 Name: arpwatch
 Epoch: 14
 Version: 2.1a15
-Release: 28%{?dist}
+Release: 30%{?dist}
 Summary: Network monitoring tools for tracking IP addresses on a network
 Group: Applications/System
 License: BSD with advertising
@@ -152,6 +152,12 @@ fi
 %attr(0644,-,arpwatch) %verify(not md5 size mtime) %config(noreplace) %{_vararpwatch}/ethercodes.dat
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 14:2.1a15-30
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 14:2.1a15-29
+- Mass rebuild 2013-12-27
+
 * Tue Apr 23 2013 Jan Synáček <jsynacek@redhat.com> 14:2.1a15-28
 - harden the package (#954336)
 - support aarch64 (#925027)
