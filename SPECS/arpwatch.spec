@@ -10,14 +10,11 @@ Group: Applications/System
 License: BSD with advertising
 URL: http://ee.lbl.gov/
 Requires(pre): shadow-utils 
-Requires(post): systemd-units
-Requires(preun): systemd-units
-Requires(postun): systemd-units
 Requires: /usr/sbin/sendmail
 BuildRequires: /usr/sbin/sendmail libpcap-devel
 
 Source0: ftp://ftp.ee.lbl.gov/arpwatch-%{version}.tar.gz
-Source1: arpwatch.service
+Source1: arpwatch@.service
 Source2: arpwatch.sysconfig
 # created by:
 # wget -O- http://standards.ieee.org/regauth/oui/oui.txt | \
@@ -85,7 +82,6 @@ mkdir -p $RPM_BUILD_ROOT%{_sbindir}
 mkdir -p $RPM_BUILD_ROOT%{_vararpwatch}
 mkdir -p $RPM_BUILD_ROOT%{_unitdir}
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-touch $RPM_BUILD_ROOT%{_vararpwatch}/arp.dat-
 make DESTDIR=$RPM_BUILD_ROOT install install-man
 
 # prepare awk scripts
@@ -105,15 +101,13 @@ for i in arp2ethers massagevendor massagevendor-old; do
 done
 
 install -p -m644 *.dat $RPM_BUILD_ROOT%{_vararpwatch}
-install -p -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_unitdir}/arpwatch.service
+install -p -m644 %{SOURCE1} $RPM_BUILD_ROOT%{_unitdir}/arpwatch@.service
 install -p -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/arpwatch
 install -p -m644 %{SOURCE3} $RPM_BUILD_ROOT%{_vararpwatch}/ethercodes.dat.bz2
 bzip2 -df $RPM_BUILD_ROOT%{_vararpwatch}/ethercodes.dat.bz2
 
 rm -f $RPM_BUILD_ROOT%{_sbindir}/massagevendor-old
-
-%post
-%systemd_post arpwatch.service
+rm -f $RPM_BUILD_ROOT%{_vararpwatch}/arp.dat
 
 %pre
 if ! getent group arpwatch &> /dev/null; then
@@ -130,12 +124,6 @@ if ! getent passwd arpwatch &> /dev/null; then
 fi
 :
 
-%postun
-%systemd_postun_with_restart arpwatch.service
-
-%preun
-%systemd_preun arpwatch.service
-
 %files
 %doc README CHANGES arpfetch
 %{_sbindir}/arpwatch
@@ -143,15 +131,15 @@ fi
 %{_sbindir}/arp2ethers
 %{_sbindir}/massagevendor
 %{_mandir}/man8/*.8*
-%{_unitdir}/arpwatch.service
+%{_unitdir}/arpwatch@.service
 %config(noreplace) %{_sysconfdir}/sysconfig/arpwatch
 %attr(1775,-,arpwatch) %dir %{_vararpwatch}
-%attr(0644,arpwatch,arpwatch) %verify(not md5 size mtime) %config(noreplace) %{_vararpwatch}/arp.dat
-%attr(0644,arpwatch,arpwatch) %verify(not md5 size mtime) %config(noreplace) %{_vararpwatch}/arp.dat-
-%attr(0600,arpwatch,arpwatch) %verify(not md5 size mtime) %ghost %{_vararpwatch}/arp.dat.new
 %attr(0644,-,arpwatch) %verify(not md5 size mtime) %config(noreplace) %{_vararpwatch}/ethercodes.dat
 
 %changelog
+* Thu Jun 5 2014 ClearFoundation <developer@clearfoundation.com> - 14:2.1a15-30
+- Added support for multiple NICs
+
 * Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 14:2.1a15-30
 - Mass rebuild 2014-01-24
 
