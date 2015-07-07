@@ -6,7 +6,7 @@ Forked version of arpwatch with ClearOS changes applied
   Add __#kojibuild__ to commit message to automatically build
 
 * git clone git://github.com/clearos/arpwatch.git
-* cd gconsole
+* cd arpwatch
 * git checkout c7
 * git remote add upstream git://git.centos.org/rpms/arpwatch.git
 * git pull upstream c7
