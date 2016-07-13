@@ -4,7 +4,7 @@
 Name: arpwatch
 Epoch: 14
 Version: 2.1a15
-Release: 30%{?dist}
+Release: 30%{?dist}.1
 Summary: Network monitoring tools for tracking IP addresses on a network
 Group: Applications/System
 License: BSD with advertising
