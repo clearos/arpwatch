@@ -4,14 +4,14 @@
 Name: arpwatch
 Epoch: 14
 Version: 2.1a15
-Release: 30%{?dist}.1
+Release: 33%{?dist}
 Summary: Network monitoring tools for tracking IP addresses on a network
 Group: Applications/System
 License: BSD with advertising
 URL: http://ee.lbl.gov/
 Requires(pre): shadow-utils 
 Requires: /usr/sbin/sendmail
-BuildRequires: /usr/sbin/sendmail libpcap-devel
+BuildRequires: /usr/sbin/sendmail libpcap-devel systemd
 
 Source0: ftp://ftp.ee.lbl.gov/arpwatch-%{version}.tar.gz
 Source1: arpwatch@.service
@@ -38,6 +38,7 @@ Patch15: arpwatch-2.1a15-lookupiinvalid.patch
 Patch16: arpwatch-201301-ethcodes.patch
 Patch17: arpwatch-pie.patch
 Patch18: arpwatch-aarch64.patch
+Patch19: arpwatch-promisc.patch
 
 %description
 The arpwatch package contains arpwatch and arpsnmp.  Arpwatch and
@@ -70,6 +71,7 @@ network.
 %patch16 -p1 -b .ethcode
 %patch17 -p1 -b .pie
 %patch18 -p1 -b .aarch64
+%patch19 -p1 -b .promisc
 
 %build
 %configure
@@ -137,8 +139,17 @@ fi
 %attr(0644,-,arpwatch) %verify(not md5 size mtime) %config(noreplace) %{_vararpwatch}/ethercodes.dat
 
 %changelog
-* Thu Jun 5 2014 ClearFoundation <developer@clearfoundation.com> - 14:2.1a15-30
+* Mon Nov 28 2016 ClearFoundation <developer@clearfoundation.com> - 14:2.1a15-33
 - Added support for multiple NICs
+
+* Mon Apr 18 2016 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-33
+- fix typo in arpwatch-promisc.patch (#1291722)
+
+* Thu Mar  3 2016 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-32
+- fix FTBFS (#1313890)
+
+* Wed Mar  2 2016 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-31
+- add -p option that disables promiscuous mode (#1291722)
 
 * Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 14:2.1a15-30
 - Mass rebuild 2014-01-24
@@ -153,7 +164,7 @@ fi
 * Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 14:2.1a15-27
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
-* Thu Jan 18 2013 Ales Ledvinka <aledvink@redhat.com> - 14:2.1a15-26
+* Thu Jan 17 2013 Ales Ledvinka <aledvink@redhat.com> - 14:2.1a15-26
 - fix permissions related to collected database
 - update ethcodes defaults to current public IEEE OUI-32
 
