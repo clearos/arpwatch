@@ -26,8 +26,26 @@ if [ -f /etc/sysconfig/arpwatch ];then
 	. /etc/sysconfig/arpwatch
 fi
 
+# Source auto-configure functions
+[ -e /etc/init.d/functions-automagic ] && source /etc/init.d/functions-automagic
+[ -e /etc/sysconfig/automagic ] && source /etc/sysconfig/automagic
+
 prog=arpwatch
 lockfile=/var/lock/subsys/$prog
+
+automagic() {
+	# Bail if no-automagic is required
+	if [ "$AUTOMAGIC" == "off" ]; then
+		return
+	fi
+
+	# Leave last known state if no external interfaces are up
+	if [ -z "$AUTOMAGIC_LANIFS" ]; then
+		INTERFACES="eth0"
+	else
+		INTERFACES="$AUTOMAGIC_LANIFS"
+	fi
+}
 
 start () {
 	[ "$EUID" != "0" ] && exit 4
@@ -36,12 +54,26 @@ start () {
 
 	status $prog > /dev/null && return 0
 
-	echo -n $"Starting $prog: "
-	daemon $prog $OPTIONS
-	RETVAL=$?
-	echo
-	[ $RETVAL -eq 0 ] && touch $lockfile
-	return $RETVAL
+	automagic
+
+	if [ -z "$INTERFACES" ]; then
+		echo -n $"Starting $prog: "
+		daemon $prog $OPTIONS
+		RETVAL=$?
+		echo
+		[ $RETVAL -eq 0 ] && touch $lockfile
+		return $RETVAL
+	else
+		for INTERFACE in $INTERFACES; do
+			echo -n "Starting $prog on $INTERFACE: "
+			touch /var/lib/arpwatch/arp_$INTERFACE.dat
+			chown arpwatch.arpwatch /var/lib/arpwatch/arp_$INTERFACE.dat
+			daemon $prog $OPTIONS -i $INTERFACE -f /var/lib/arpwatch/arp_$INTERFACE.dat
+			RETVAL=$?
+			echo
+			[ $RETVAL -eq 0 ] && touch $lockfile.$INTERFACE
+		done
+	fi
 }
 
 stop () {
@@ -50,7 +82,7 @@ stop () {
 	killproc $prog
 	RETVAL=$?
 	echo
-	[ $RETVAL -eq 0 ] && rm -f $lockfile
+	[ $RETVAL -eq 0 ] && rm -f $lockfile*
 	return $RETVAL
 }
 

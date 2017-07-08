@@ -149,6 +149,9 @@ fi
 %verify(not md5 size mtime) %config(noreplace) %attr(0644,arpwatch,arpwatch) %{_vararpwatch}/ethercodes.dat
 
 %changelog
+* Mon May 30 2016 ClearFoundation <developer@clearfoundation.com> 14:2.1a15-16.clear
+- add support for multiple interfaces
+
 * Wed Dec 16 2015 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-16
 - fix default owners of %%doc files
 
