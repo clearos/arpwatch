@@ -1,0 +1,13 @@
+--- arpwatch-2.1a15/arpwatch.c	2015-12-15 14:11:14.000000000 +0100
++++ arpwatch-2.1a15-new/arpwatch.c	2015-12-15 14:32:18.596006039 +0100
+@@ -147,8 +147,8 @@ void dropprivileges(const char* user)
+ 	struct passwd* pw;
+ 	pw = getpwnam( user );
+ 	if ( pw ) {
+-		if ( initgroups(pw->pw_name, NULL) != 0 || setgid(pw->pw_gid) != 0 ||
+-				 setuid(pw->pw_uid) != 0 ) {
++		if ( setgid(pw->pw_gid) != 0 || setgroups(0, NULL) != 0 ||
++		     setuid(pw->pw_uid) != 0 ) {
+ 			syslog(LOG_ERR, "Couldn't change to '%.32s' uid=%d gid=%d", user,
+ 						 pw->pw_uid, pw->pw_gid);
+ 			exit(1);
