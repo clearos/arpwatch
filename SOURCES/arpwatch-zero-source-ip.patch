@@ -1,0 +1,32 @@
+--- a/arpwatch.c	2017-03-22 08:44:22.095722636 +0100
++++ b/arpwatch.c	2017-03-22 09:11:08.119515745 +0100
+@@ -123,6 +123,7 @@ struct nets {
+ static struct nets *nets;
+ static int nets_ind;
+ static int nets_size;
++static int ignore_zero_net;
+ 
+ extern int optind;
+ extern int opterr;
+@@ -477,6 +478,11 @@ process_ether(register u_char *u, regist
+ 	/* Source ip address */
+ 	BCOPY(SPA(ea), &sia, 4);
+ 
++	if (sia == 0 && ignore_zero_net) {
++		syslog(LOG_DEBUG, "ignoring packet from 0.0.0.0");
++		return;
++	}
++
+ 	/* Watch for bogons */
+ 	if (isbogon(sia)) {
+ 		dosyslog(LOG_INFO, "bogon", sia, sea, sha);
+@@ -802,6 +808,9 @@ addnet(register const char *str)
+ 	np->netmask = m;
+ 	++nets_ind;
+ 
++	if (n == 0)
++		ignore_zero_net = 1;
++
+ 	return (1);
+ }
+ 
