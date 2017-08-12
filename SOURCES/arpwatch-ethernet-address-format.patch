@@ -1,0 +1,17 @@
+Originally reported at https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=315215.
+
+Resolves: #1368523
+
+--- arpwatch-2.1a13/ec.c	2000-10-13 22:49:16.000000000 +0000
++++ arpwatch-2.1a13/ec.c	2005-06-18 07:12:14.131890648 +0000
+@@ -218,7 +218,7 @@
+ {
+ 	static char str[32];
+ 
+-	(void)sprintf(str, "%x:%x:%x:%x:%x:%x",
++	(void)sprintf(str, "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x",
+ 	    e[0], e[1], e[2], e[3], e[4], e[5]);
+ 	return (str);
+ }
+
+

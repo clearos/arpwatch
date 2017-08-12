@@ -4,7 +4,7 @@
 Name: arpwatch
 Epoch: 14
 Version: 2.1a15
-Release: 33%{?dist}
+Release: 36%{?dist}
 Summary: Network monitoring tools for tracking IP addresses on a network
 Group: Applications/System
 License: BSD with advertising
@@ -39,6 +39,8 @@ Patch16: arpwatch-201301-ethcodes.patch
 Patch17: arpwatch-pie.patch
 Patch18: arpwatch-aarch64.patch
 Patch19: arpwatch-promisc.patch
+Patch20: arpwatch-ethernet-address-format.patch
+Patch21: arpwatch-zero-source-ip.patch
 
 %description
 The arpwatch package contains arpwatch and arpsnmp.  Arpwatch and
@@ -72,6 +74,8 @@ network.
 %patch17 -p1 -b .pie
 %patch18 -p1 -b .aarch64
 %patch19 -p1 -b .promisc
+%patch20 -p1 -b .ethernet-address
+%patch21 -p1 -b .zero-source-ip
 
 %build
 %configure
@@ -139,8 +143,17 @@ fi
 %attr(0644,-,arpwatch) %verify(not md5 size mtime) %config(noreplace) %{_vararpwatch}/ethercodes.dat
 
 %changelog
-* Mon Nov 28 2016 ClearFoundation <developer@clearfoundation.com> - 14:2.1a15-33
+* Fri Aug 11 2017 ClearFoundation <developer@clearfoundation.com> - 14:2.1a15-36
 - Added support for multiple NICs
+
+* Wed Mar 22 2017 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-36
+- refix: arpwatch detects flip flop of 0.0.0.0 for multiple DHCP Clients (#1408894)
+
+* Wed Mar 22 2017 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-35
+- arpwatch detects flip flop of 0.0.0.0 for multiple DHCP Clients (#1408894)
+
+* Tue Mar 21 2017 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-34
+- MAC addresses are not shown properly (#1368523)
 
 * Mon Apr 18 2016 Jan Synáček <jsynacek@redhat.com> - 14:2.1a15-33
 - fix typo in arpwatch-promisc.patch (#1291722)
